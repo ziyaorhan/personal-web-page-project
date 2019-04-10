@@ -1,0 +1,18 @@
+﻿@using PersonalWebPage_MVC.Models
+@model List<Skill>
+@foreach (Skill item in Model)
+{
+    <tr>
+        <td id="tdDescTech-@item.ID" style="vertical-align:middle">@item.Description</td>
+
+        <td style="vertical-align:middle; width:60px">
+            <i class="@item.Description" style="font-size:40px"></i>
+        </td>
+        <td style="vertical-align:middle; width:60px">
+            <a id="@item.ID" class="btn btn-danger silTech" data-toggle="modal" href="#modalRemoveTech">
+                Sil
+            </a>
+        </td>
+    </tr>
+}
+
