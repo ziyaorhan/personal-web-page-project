@@ -13,12 +13,13 @@ namespace PersonalWebPage_MVC.Controllers
     {
         // GET: Login
         public ActionResult Index()
-        {
+        {     
             return View();
         }
         #region About View
         public ActionResult About()
         {
+            ViewBag.About = "active";
             TblPerson tblPerson = new TblPerson();
             var person = tblPerson.GetAll().OrderBy(a => a.ID).FirstOrDefault();
             return View(person);
@@ -86,6 +87,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region Experience View
         public ActionResult Experience()
         {
+            ViewBag.Experience = "active";
             return View();
         }
         public PartialViewResult GetExperiences()
@@ -135,6 +137,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region Educations View
         public ActionResult Education()
         {
+            ViewBag.Education = "active";
             return View();
         }
         public PartialViewResult GetEducations()
@@ -171,6 +174,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region Skills View
         public ActionResult Skills()
         {
+            ViewBag.Skills = "active";
             return View();
         }
         //tech
@@ -228,6 +232,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region Interest View
         public ActionResult Interests()
         {
+            ViewBag.Interests = "active";
             return View();
         }
         public PartialViewResult GetInterests()
@@ -264,6 +269,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region Award View
         public ActionResult Award()
         {
+            ViewBag.Award = "active";
             return View();
         }
         public PartialViewResult GetAwards()
@@ -300,6 +306,7 @@ namespace PersonalWebPage_MVC.Controllers
         #region LoginInfoView
         public ActionResult LoginInfo()
         {
+            ViewBag.LoginInfo = "active";
             return View();
         }
         [HttpGet]
