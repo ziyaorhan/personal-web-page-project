@@ -3,17 +3,11 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Mosaddek">
-    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-    <link rel="shortcut icon" href="img/favicon.png">
-
-    <title>FlatLab - Flat & Responsive Bootstrap Admin Template</title>
-
+    <title>Giriş</title>
     <!-- Bootstrap core CSS -->
     <link href="~/Styles/bootstrap.min.css" rel="stylesheet">
     <link href="~/Styles/bootstrap-reset.css" rel="stylesheet">
@@ -22,29 +16,29 @@
     <!-- Custom styles for this template -->
     <link href="~/Styles/style.css" rel="stylesheet">
     <link href="~/Styles/style-responsive.css" rel="stylesheet" />
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
-    <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-    <script src="js/respond.min.js"></script>
-    <![endif]-->
 </head>
 
 <body class="login-body">
     <div class="container">
-        <form class="form-signin" action="index.html">
+        <div class="form-signin">
             <h2 class="form-signin-heading">Giriş Yap</h2>
             <div class="login-wrap">
-                <input type="text" class="form-control" placeholder="Default: admin" autofocus>
-                <input type="password" class="form-control" placeholder="Default: 1234">
-                <label class="checkbox">
-                    <input type="checkbox" value="remember-me"> Beni Hatırla
-                    <span class="pull-right">
-                        <a data-toggle="modal" href="#myModal"> Şifremi Unuttum?</a>
-                    </span>
-                </label>
-                <button class="btn btn-lg btn-login btn-block" type="submit">Giriş</button>
+                <form>
+                    <input id="userName" name="userName" type="text" class="form-control" placeholder="Default: admin" autofocus required>
+                    <input id="pwd" name="pwd" type="password" class="form-control" placeholder="Default: 1234" required>
+                    <label class="checkbox">
+                        <input id="isRemember" name="isRemember" type="checkbox" value="true"> Beni Hatırla
+                        <span class="pull-right">
+                            <a data-toggle="modal" href="#myModal"> Şifremi Unuttum?</a>
+                        </span>
+                    </label>
+                </form>
+                <p id="alertInfo" style="color:red; display:none;font-size:small;float:left">[*]Hatalı Giriş! Bilgilerinizi kontrol ediniz.</p>
+                <button id="btnLogin" class="btn btn-lg btn-login btn-block" type="button">Giriş</button>
             </div>
+        </div>
+
+        <form action="/" method="post">
             <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -69,6 +63,36 @@
     <!-- js placed at the end of the document so the pages load faster -->
     <script src="~/Scripts/jquery.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
+  <script>
+            $("#btnLogin").click(function () {
+                var userName = $("#userName").val();
+                var pwd = $("#pwd").val();
+                var isRemember = $("#isRemember").val();
+                PostLoginInfo(userName, pwd, isRemember);
+            });
+        </script>
+        <script>
+            function PostLoginInfo(name, password, rememberVal) {
+                $.ajax({
+                    url: '/Login/ValidateLoginIfo',
+                    method: 'POST',
+                    data: { userName: encodeURIComponent(name), pwd: encodeURIComponent(password), isRemember: rememberVal },
+                    dataType: 'text'
+                }).done(function (d) {
+                    if (d == "false") {
+                        $("#alertInfo").show(400, function () {
+                            $(this).delay(3000);
+                            $(this).hide(400);
+                        });
+                    } else {
+                        window.location.replace("/Login/About");
+                    }
+                }).fail(function (h) {
+                    alert("hata var");
+                    console.log("Giriş bilgileri gönderilirken hata oluştu...");
+                })
+            }
+        </script>
 </body>
 </html>
 

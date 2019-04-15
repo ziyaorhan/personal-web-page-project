@@ -5,17 +5,84 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Web.UI.WebControls;
 
 namespace PersonalWebPage_MVC.Controllers
 {
+    [Authorize]
     public class LoginController : Controller
     {
-        // GET: Login
+        #region Login,Logout
+        [AllowAnonymous]
         public ActionResult Index()
-        {     
+        {
             return View();
         }
+        [AllowAnonymous]
+        [HttpPost]
+        public string ValidateLoginIfo(string userName, string pwd, string isRemember = "false")
+        {
+            string returnValue;
+            try
+            {
+                TblLoginInfo tblLoginInfo = new TblLoginInfo();
+
+                string currentEncryptePwd = tblLoginInfo.EncryptSha(tblLoginInfo.EncryptMd5(HttpUtility.UrlDecode(pwd)));
+                string currentUserName = HttpUtility.UrlDecode(userName).Trim();
+
+                string dbEncryptePwd = tblLoginInfo.GetAll().OrderBy(a => a.ID).FirstOrDefault().Password.ToString();
+                string dbUserName = tblLoginInfo.GetAll().OrderBy(a => a.ID).FirstOrDefault().UserName.ToString();
+
+                if (!String.IsNullOrEmpty(currentEncryptePwd) && !String.IsNullOrEmpty(currentUserName) && !String.IsNullOrEmpty(dbEncryptePwd) && !String.IsNullOrEmpty(dbUserName))
+                {
+                    if (currentUserName == dbUserName)
+                    {
+                        if (currentEncryptePwd == dbEncryptePwd)
+                        {
+                            if (isRemember == "true")
+                            {
+                                FormsAuthentication.RedirectFromLoginPage(userName, true);
+                            }
+                            else
+                            {
+                                FormsAuthentication.RedirectFromLoginPage(userName, false);
+                            }
+                            returnValue = "true";
+
+                            return returnValue;
+                        }
+                        else
+                        {
+                            returnValue = "false";
+                            return returnValue;
+                        }
+                    }
+                    else
+                    {
+                        returnValue = "false";
+                        return returnValue;
+                    }
+                }
+                else
+                {
+                    returnValue = "false";
+                    return returnValue;
+                }
+            }
+            catch
+            {
+                returnValue = "false";
+                return returnValue;
+            }
+        }
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index");
+        } 
+        #endregion
+
         #region About View
         public ActionResult About()
         {
@@ -81,7 +148,7 @@ namespace PersonalWebPage_MVC.Controllers
                 );
             int status = tblPerson.ExecuteQuery(sqlStr);
             return RedirectToAction("About");
-        } 
+        }
         #endregion
 
         #region Experience View
@@ -340,7 +407,7 @@ namespace PersonalWebPage_MVC.Controllers
             TblLoginInfo tblLoginInfo = new TblLoginInfo();
 
             string currentEncrypte = tblLoginInfo.EncryptSha(tblLoginInfo.EncryptMd5(HttpUtility.UrlDecode(currentPwd)));
-            string dbEncrypte = tblLoginInfo.GetAll().OrderByDescending(a => a.Password).FirstOrDefault().Password.ToString();
+            string dbEncrypte = tblLoginInfo.GetAll().OrderBy(a => a.ID).FirstOrDefault().Password.ToString();
 
             if (currentEncrypte == dbEncrypte)
             {
